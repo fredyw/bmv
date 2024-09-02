@@ -2,9 +2,10 @@
 name = "bulk-renamer"
 version = "0.1.0"
 edition = "2021"
+authors = ["Fredy Wijaya"]
 
 [dependencies]
-clap = "4.5.16"
+clap = { version = "4.5.16", features = ["derive"] }
 regex = "1.10.6"
 walkdir = "2.5.0"
 rayon = "1.10.0"
