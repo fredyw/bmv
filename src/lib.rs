@@ -1,1 +1,1 @@
-mod bulk_rename;
+pub mod bulk_renamer;
