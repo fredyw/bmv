@@ -53,6 +53,23 @@ fn bulk_rename_no_match() {
 }
 
 #[test]
+fn bulk_rename_unicode_chars() {
+    let tmp_path = Path::new("tmp3");
+    fs::create_dir_all("tmp3").unwrap();
+    File::create("tmp3/中文.txt").unwrap();
+    File::create("tmp3/日本.txt").unwrap();
+
+    let bulk_rename = BulkRename::new(tmp_path, r"中文.txt", r"英语.txt").unwrap();
+    bulk_rename.bulk_rename(NoOpCallback::new());
+
+    assert!(Path::new("tmp3/日本.txt").exists());
+    assert!(!Path::new("tmp3/中文.txt").exists());
+    assert!(Path::new("tmp3/英语.txt").exists());
+
+    fs::remove_dir_all(tmp_path).unwrap();
+}
+
+#[test]
 fn path_is_not_a_directory() {
     let bulk_rename = BulkRename::new(Path::new("doesntexist"), "foo", "bar");
     assert!(matches!(bulk_rename.unwrap_err(), Error::NotDirError));
