@@ -7,6 +7,12 @@ A CLI to do a bulk rename.
 ```rust
 struct SimpleCallback {}
 
+impl SimpleCallback {
+    fn new() -> Self {
+        Self {}
+    }
+}
+
 impl Callback for SimpleCallback {
     fn on_ok(&self, old_path: &Path, new_path: &Path) {
         println!("OK: {} --> {}", old_path.display(), new_path.display());
@@ -24,7 +30,7 @@ impl Callback for SimpleCallback {
 
 match BulkRename::new(path, r"(test)_(\d+).txt", r"${2}_${1}.txt") {
     Ok(br) => {
-        br.bulk_rename(NoOpCallback::new());
+        br.bulk_rename(SimpleCallback::new());
     }
     Err(e) => {
         eprintln!("Error: {:?}", e);
