@@ -1,11 +1,11 @@
-extern crate clap;
 extern crate bulk_renamer;
+extern crate clap;
 
-use std::path::PathBuf;
-use std::process;
+use bulk_renamer::bulk_rename;
 use clap::Parser;
 use regex::Regex;
-use bulk_renamer::bulk_renamer::bulk_rename;
+use std::path::PathBuf;
+use std::process;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -34,16 +34,17 @@ fn err_and_exit(message: &str) {
 
 fn main() {
     let args = Args::parse();
-    if !args.dir.is_dir() {
-        err_and_exit(&format!("{:?} is not a directory.", args.dir.as_path()));
+    let path = args.dir.as_path();
+    if !path.is_dir() {
+        err_and_exit(&format!("{:?} is not a directory.", path));
     }
     let from = Regex::new(&args.from);
     if from.is_err() {
-        err_and_exit(&format!("Invalid from regex '{}'", args.from));
+        err_and_exit(&format!("Invalid from regex {}", args.from));
     }
     let to = Regex::new(&args.to);
     if to.is_err() {
-        err_and_exit(&format!("Invalid to regex '{}'", args.to));
+        err_and_exit(&format!("Invalid to regex {}", args.to));
     }
-    bulk_rename(args.dir.as_path(), from.unwrap(), to.unwrap(), args.dry_run);
+    bulk_rename(path, from.unwrap(), to.unwrap(), args.dry_run);
 }
