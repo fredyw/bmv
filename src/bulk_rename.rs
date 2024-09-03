@@ -11,6 +11,7 @@ pub struct BulkRename<'a> {
     replacement: &'a str,
 }
 
+#[derive(Debug)]
 pub enum Error {
     NotDirError,
     RegexError(regex::Error),
@@ -19,6 +20,20 @@ pub enum Error {
 pub trait Callback: Sync + Send {
     fn on_ok(&self, old_path: &Path, new_path: &Path);
     fn on_error(&self, old_path: &Path, new_path: &Path, error: io::Error);
+}
+
+pub struct NoOpCallback {}
+
+impl NoOpCallback {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
+impl Callback for NoOpCallback {
+    fn on_ok(&self, _old_path: &Path, _new_path: &Path) {}
+
+    fn on_error(&self, _old_path: &Path, _new_path: &Path, _error: io::Error) {}
 }
 
 impl<'a> BulkRename<'a> {
