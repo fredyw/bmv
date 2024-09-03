@@ -10,20 +10,20 @@ use std::process;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Set the directory to perform a bulk rename.
-    #[arg(short, long)]
+    /// Set the directory.
+    #[arg(short = 'f', long)]
     dir: PathBuf,
 
-    /// Set the from regex.
-    #[arg(short, long)]
-    from: String,
+    /// Set the regex.
+    #[arg(short = 'r', long)]
+    regex: String,
 
-    /// Set the to replacement.
-    #[arg(short, long)]
-    to: String,
+    /// Set the replacement.
+    #[arg(short = 'p', long)]
+    replacement: String,
 
     /// Perform a dry-run.
-    #[arg(short = 'r', long, default_value_t = false)]
+    #[arg(short = 'd', long, default_value_t = false)]
     dry_run: bool,
 }
 
@@ -39,10 +39,15 @@ fn main() {
         err_and_exit(&format!("{:?} is not a directory.", path));
     }
     if args.dry_run {
-        bulk_rename_fn(path, &args.from, &args.to, |old_path, new_path| {
-            println!("{} --> {}", old_path.display(), new_path.display());
-        })
+        bulk_rename_fn(
+            path,
+            &args.regex,
+            &args.replacement,
+            |old_path, new_path| {
+                println!("{} --> {}", old_path.display(), new_path.display());
+            },
+        )
     } else {
-        bulk_rename(path, &args.from, &args.to);
+        bulk_rename(path, &args.regex, &args.replacement);
     }
 }
