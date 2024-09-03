@@ -2,8 +2,8 @@ extern crate bmv;
 extern crate clap;
 
 use bmv::bulk_rename;
+use bmv::bulk_rename_fn;
 use clap::Parser;
-use regex::Regex;
 use std::path::PathBuf;
 use std::process;
 
@@ -18,7 +18,7 @@ struct Args {
     #[arg(short, long)]
     from: String,
 
-    /// Set the to regex.
+    /// Set the to replacement.
     #[arg(short, long)]
     to: String,
 
@@ -38,13 +38,11 @@ fn main() {
     if !path.is_dir() {
         err_and_exit(&format!("{:?} is not a directory.", path));
     }
-    let from = Regex::new(&args.from);
-    if from.is_err() {
-        err_and_exit(&format!("Invalid from regex {}", args.from));
+    if args.dry_run {
+        bulk_rename_fn(path, &args.from, &args.to, |old_path, new_path| {
+            println!("{} --> {}", old_path.display(), new_path.display());
+        })
+    } else {
+        bulk_rename(path, &args.from, &args.to);
     }
-    let to = Regex::new(&args.to);
-    if to.is_err() {
-        err_and_exit(&format!("Invalid to regex {}", args.to));
-    }
-    bulk_rename(path, from.unwrap(), to.unwrap(), args.dry_run);
 }
