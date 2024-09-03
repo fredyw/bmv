@@ -1,4 +1,7 @@
 # bmv
+
+![Rust](https://github.com/fredyw/bmv/actions/workflows/rust.yml/badge.svg)
+
 A CLI to do a bulk rename.
 
 ## Usage
