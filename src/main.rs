@@ -52,7 +52,6 @@ fn main() {
             BulkRenameError::RegexError(e) => {
                 eprintln!("Error: {} is not a valid regex: '{}'", args.regex, e)
             }
-            BulkRenameError::RenameError(e) => eprintln!("Unable to rename '{}'", e),
         },
     }
 }

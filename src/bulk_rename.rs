@@ -7,7 +7,6 @@ use walkdir::WalkDir;
 pub enum BulkRenameError {
     NotDirError,
     RegexError(regex::Error),
-    RenameError(io::Error),
 }
 
 pub fn bulk_rename_fn(
