@@ -5,8 +5,31 @@ A CLI to do a bulk rename.
 
 ### API
 ```rust
-let bulk_rename = BulkRename::new(path, r"test_123.txt", r"${2}_${1}.txt").unwrap();
-bulk_rename.bulk_rename(NoOpCallback::new());
+struct SimpleCallback {}
+
+impl Callback for SimpleCallback {
+    fn on_ok(&self, old_path: &Path, new_path: &Path) {
+        println!("OK: {} --> {}", old_path.display(), new_path.display());
+    }
+
+    fn on_error(&self, old_path: &Path, new_path: &Path, error: std::io::Error) {
+        eprintln!(
+            "Error: Unable to rename {} to {}: {}",
+            old_path.display(),
+            new_path.display(),
+            error
+        );
+    }
+}
+
+match BulkRename::new(path, r"(test)_(\d+).txt", r"${2}_${1}.txt") {
+    Ok(br) => {
+        br.bulk_rename(NoOpCallback::new());
+    }
+    Err(e) => {
+        eprintln!("Error: {:?}", e);
+    }
+}
 ```
 
 ### CLI

@@ -31,7 +31,7 @@ fn bulk_rename_has_match() {
     assert!(Path::new("tmp1/a/234_test.txt").exists());
     assert!(Path::new("tmp1/a/b/345_test.txt").exists());
 
-    fs::remove_dir_all(tmp_path).unwrap()
+    fs::remove_dir_all(tmp_path).unwrap();
 }
 
 #[test]
@@ -49,7 +49,7 @@ fn bulk_rename_no_match() {
     assert!(Path::new("tmp2/a/test_234.txt").exists());
     assert!(Path::new("tmp2/a/b/test_345.txt").exists());
 
-    fs::remove_dir_all(tmp_path).unwrap()
+    fs::remove_dir_all(tmp_path).unwrap();
 }
 
 #[test]
