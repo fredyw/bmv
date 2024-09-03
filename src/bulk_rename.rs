@@ -11,9 +11,12 @@ pub struct BulkRename<'a> {
     replacement: &'a str,
 }
 
+/// Possible errors when running a bulk rename.
 #[derive(Debug)]
 pub enum Error {
+    /// An error for when the path is not a directory.
     NotDirError,
+    /// An error for when the regex is invalid.
     RegexError(regex::Error),
 }
 
