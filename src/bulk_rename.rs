@@ -59,7 +59,8 @@ impl<'a> BulkRename<'a> {
         })
     }
 
-    /// Executes a function `f` for any files that match the specified regex.
+    /// Executes a function `f` for any files that match the specified regex. The function `f` will
+    /// not be called if the old file name is the same as the new file name.
     pub fn bulk_rename_fn<F>(&self, f: F)
     where
         F: Fn(&Path, &Path) + Sync + Send,
@@ -88,7 +89,7 @@ impl<'a> BulkRename<'a> {
             });
     }
 
-    /// Runs a bulk rename.
+    /// Runs a bulk rename with a `Callback`.
     pub fn bulk_rename(&self, callback: impl Callback) {
         self.bulk_rename_fn(|old_path, new_path| match fs::rename(old_path, new_path) {
             Ok(_) => {
