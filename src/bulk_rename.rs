@@ -9,11 +9,11 @@ pub enum BulkRenameError {
     RegexError(regex::Error),
 }
 
-pub fn bulk_rename_fn(
+pub fn bulk_rename_fn<F: Fn(&Path, &Path) + Sync + Send>(
     dir: &Path,
     regex: &str,
     replacement: &str,
-    fun: fn(&Path, &Path),
+    f: F,
 ) -> Result<(), BulkRenameError> {
     if !dir.is_dir() {
         return Err(BulkRenameError::NotDirError);
@@ -32,7 +32,7 @@ pub fn bulk_rename_fn(
                             regex.replace_all(old_file_name, replacement).to_string();
                         let mut new_path = path.to_path_buf();
                         new_path.set_file_name(new_file_name);
-                        fun(&path, &new_path);
+                        f(&path, &new_path);
                     }
                 }
             }
