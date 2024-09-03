@@ -77,9 +77,11 @@ impl<'a> BulkRename<'a> {
                                 .regex
                                 .replace_all(old_file_name, self.replacement)
                                 .to_string();
-                            let mut new_path = path.to_path_buf();
-                            new_path.set_file_name(new_file_name);
-                            f(&path, &new_path);
+                            if old_file_name != new_file_name {
+                                let mut new_path = path.to_path_buf();
+                                new_path.set_file_name(new_file_name);
+                                f(&path, &new_path);
+                            }
                         }
                     }
                 }
