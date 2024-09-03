@@ -64,15 +64,16 @@ fn main() {
     let args = Args::parse();
     let path = args.dir.as_path();
     let bulk_rename = BulkRename::new(path, &args.regex, &args.replacement);
-    let result = if args.dry_run {
-        bulk_rename.bulk_rename_fn(|old_path, new_path| {
-            println!("{} --> {}", old_path.display(), new_path.display());
-        })
-    } else {
-        bulk_rename.bulk_rename(CliCallback::new(args.quiet))
-    };
-    match result {
-        Ok(_) => {}
+    match bulk_rename {
+        Ok(bulk_rename) => {
+            if args.dry_run {
+                bulk_rename.bulk_rename_fn(|old_path, new_path| {
+                    println!("Dry-run: {} --> {}", old_path.display(), new_path.display());
+                })
+            } else {
+                bulk_rename.bulk_rename(CliCallback::new(args.quiet))
+            }
+        }
         Err(error) => match error {
             Error::NotDirError => {
                 eprintln!("Error: {} is not a directory", path.display())
