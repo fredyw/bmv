@@ -2,6 +2,14 @@
 A CLI to do a bulk rename.
 
 ## Usage
+
+### API
+```rust
+let bulk_rename = BulkRename::new(path, r"test_123.txt", r"${2}_${1}.txt").unwrap();
+bulk_rename.bulk_rename(NoOpCallback::new());
+```
+
+### CLI
 ```
 Usage: bmv [OPTIONS] --dir <DIR> --regex <REGEX> --replacement <REPLACEMENT>
 

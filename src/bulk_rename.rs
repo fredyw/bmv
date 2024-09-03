@@ -17,14 +17,20 @@ pub enum Error {
     RegexError(regex::Error),
 }
 
+/// A callback for the bulk rename.
 pub trait Callback: Sync + Send {
+    /// This function is called when the rename operation was successful.
     fn on_ok(&self, old_path: &Path, new_path: &Path);
+
+    /// This function is called when the rename operation was unsuccessful.
     fn on_error(&self, old_path: &Path, new_path: &Path, error: io::Error);
 }
 
+/// A no-op `Callback`.
 pub struct NoOpCallback {}
 
 impl NoOpCallback {
+    /// Creates a new no-op `Callback`.
     pub fn new() -> Self {
         Self {}
     }
@@ -37,6 +43,7 @@ impl Callback for NoOpCallback {
 }
 
 impl<'a> BulkRename<'a> {
+    /// Creates a new `BulkRename`.
     pub fn new(dir: &'a Path, regex: &'a str, replacement: &'a str) -> Result<Self, Error> {
         if !dir.is_dir() {
             return Err(Error::NotDirError);
@@ -49,6 +56,7 @@ impl<'a> BulkRename<'a> {
         })
     }
 
+    /// Executes a function `f` for any files that match the specified regex.
     pub fn bulk_rename_fn<F>(&self, f: F)
     where
         F: Fn(&Path, &Path) + Sync + Send,
@@ -75,6 +83,7 @@ impl<'a> BulkRename<'a> {
             });
     }
 
+    /// Runs a bulk rename.
     pub fn bulk_rename(&self, callback: impl Callback) {
         self.bulk_rename_fn(|old_path, new_path| match fs::rename(old_path, new_path) {
             Ok(_) => {
