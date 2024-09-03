@@ -1,7 +1,7 @@
 use rayon::prelude::*;
 use regex::Regex;
-use std::fs;
 use std::path::Path;
+use std::{fs, io};
 use walkdir::WalkDir;
 
 pub enum BulkRenameError {
@@ -40,14 +40,27 @@ pub fn bulk_rename_fn<F: Fn(&Path, &Path) + Sync + Send>(
     Ok(())
 }
 
-pub fn bulk_rename(dir: &Path, regex: &str, replacement: &str) -> Result<(), BulkRenameError> {
+pub fn bulk_rename<
+    F1: Fn(&Path, &Path) + Sync + Send,
+    F2: Fn(&Path, &Path, io::Error) + Sync + Send,
+>(
+    dir: &Path,
+    regex: &str,
+    replacement: &str,
+    successful: F1,
+    unsuccessful: F2,
+) -> Result<(), BulkRenameError> {
     bulk_rename_fn(
         dir,
         regex,
         replacement,
         |old_path, new_path| match fs::rename(old_path, new_path) {
-            Ok(_) => {}
-            Err(_) => {}
+            Ok(_) => {
+                successful(old_path, new_path);
+            }
+            Err(error) => {
+                unsuccessful(old_path, new_path, error);
+            }
         },
     )
 }

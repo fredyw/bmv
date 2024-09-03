@@ -40,16 +40,29 @@ fn main() {
             },
         )
     } else {
-        bulk_rename(path, &args.regex, &args.replacement)
+        bulk_rename(
+            path,
+            &args.regex,
+            &args.replacement,
+            |_, _| {},
+            |old_path, new_path, error| {
+                eprintln!(
+                    "Error: Unable to rename {} to {}: {}",
+                    old_path.display(),
+                    new_path.display(),
+                    error
+                );
+            },
+        )
     };
     match result {
         Ok(_) => {}
-        Err(e) => match e {
+        Err(error) => match error {
             BulkRenameError::NotDirError => {
                 eprintln!("Error: {} is not a directory", path.display())
             }
-            BulkRenameError::RegexError(e) => {
-                eprintln!("Error: {} is not a valid regex: '{}'", args.regex, e)
+            BulkRenameError::RegexError(error) => {
+                eprintln!("Error: {} is not a valid regex: '{}'", args.regex, error)
             }
         },
     }
