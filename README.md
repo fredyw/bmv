@@ -28,7 +28,7 @@ impl Callback for SimpleCallback {
     }
 }
 
-match BulkRename::new(path, r"(test)_(\d+).txt", r"${2}_${1}.txt") {
+match BulkRename::new(Path::new("tmp"), r"(test)_(\d+).txt", r"${2}_${1}.txt") {
     Ok(br) => {
         br.bulk_rename(SimpleCallback::new());
     }
