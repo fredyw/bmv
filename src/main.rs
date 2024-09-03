@@ -37,7 +37,6 @@ fn main() {
             &args.replacement,
             |old_path, new_path| {
                 println!("{} --> {}", old_path.display(), new_path.display());
-                Ok(())
             },
         )
     } else {

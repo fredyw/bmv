@@ -1,7 +1,7 @@
 use rayon::prelude::*;
 use regex::Regex;
+use std::fs;
 use std::path::Path;
-use std::{fs, io};
 use walkdir::WalkDir;
 
 pub enum BulkRenameError {
@@ -13,7 +13,7 @@ pub fn bulk_rename_fn(
     dir: &Path,
     regex: &str,
     replacement: &str,
-    fun: fn(&Path, &Path) -> Result<(), io::Error>,
+    fun: fn(&Path, &Path),
 ) -> Result<(), BulkRenameError> {
     if !dir.is_dir() {
         return Err(BulkRenameError::NotDirError);
@@ -32,8 +32,7 @@ pub fn bulk_rename_fn(
                             regex.replace_all(old_file_name, replacement).to_string();
                         let mut new_path = path.to_path_buf();
                         new_path.set_file_name(new_file_name);
-                        // TODO: Don't unwrap.
-                        fun(&path, &new_path).unwrap();
+                        fun(&path, &new_path);
                     }
                 }
             }
@@ -41,8 +40,14 @@ pub fn bulk_rename_fn(
     Ok(())
 }
 
-pub fn bulk_rename(dir: &Path, from: &str, to: &str) -> Result<(), BulkRenameError> {
-    bulk_rename_fn(dir, from, to, |old_path, new_path| {
-        fs::rename(old_path, new_path)
-    })
+pub fn bulk_rename(dir: &Path, regex: &str, replacement: &str) -> Result<(), BulkRenameError> {
+    bulk_rename_fn(
+        dir,
+        regex,
+        replacement,
+        |old_path, new_path| match fs::rename(old_path, new_path) {
+            Ok(_) => {}
+            Err(_) => {}
+        },
+    )
 }
