@@ -19,8 +19,8 @@ pub fn bulk_rename_fn(
         return Err(BulkRenameError::NotDirError);
     }
     let regex = Regex::new(regex).map_err(|e| BulkRenameError::RegexError(e))?;
-    let walker = WalkDir::new(dir).into_iter();
-    walker
+    WalkDir::new(dir)
+        .into_iter()
         .filter_map(|entry| entry.ok())
         .par_bridge()
         .for_each(|entry| {
