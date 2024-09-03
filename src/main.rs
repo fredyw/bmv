@@ -26,7 +26,7 @@ struct Args {
     #[arg(short = 'd', long, default_value_t = false)]
     dry_run: bool,
 
-    /// Run the bulk rename in quiet mode.
+    /// Run in quiet mode.
     #[arg(short = 'q', long, default_value_t = false)]
     quiet: bool,
 }
