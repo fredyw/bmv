@@ -1,3 +1,3 @@
-pub mod bulk_renamer;
+pub mod bulk_rename;
 
-pub use crate::bulk_renamer::bulk_rename;
+pub use crate::bulk_rename::bulk_rename;

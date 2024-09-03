@@ -1,5 +1,5 @@
 [package]
-name = "bulk-renamer"
+name = "bmv"
 version = "0.1.0"
 edition = "2021"
 authors = ["Fredy Wijaya"]

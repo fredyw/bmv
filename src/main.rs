@@ -1,7 +1,7 @@
-extern crate bulk_renamer;
+extern crate bmv;
 extern crate clap;
 
-use bulk_renamer::bulk_rename;
+use bmv::bulk_rename;
 use clap::Parser;
 use regex::Regex;
 use std::path::PathBuf;
